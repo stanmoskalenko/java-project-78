@@ -1,12 +1,11 @@
 package hexlet.code;
 
-public final class StringSchema {
-    private boolean required = false;
+public final class StringSchema extends BaseSchema<StringSchema> {
     private int minLen;
     private String substr = "";
 
     public StringSchema required() {
-        this.required = true;
+        super.required = true;
         return this;
     }
 
@@ -21,7 +20,7 @@ public final class StringSchema {
     }
 
     public boolean isValid(Object data) {
-        if (required && data == null) {
+        if (super.required && data == null) {
             return false;
         }
 
