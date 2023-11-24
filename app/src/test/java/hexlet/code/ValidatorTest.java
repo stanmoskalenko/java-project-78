@@ -4,6 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -94,6 +96,80 @@ class ValidatorTest {
             assertTrue(validator.isValid(BOUND));
             assertTrue(validator.isValid(null));
             assertFalse(validator.isValid(ORIGIN));
+        }
+    }
+
+    @Nested
+    class MapTest {
+        private static final int SIZE = 2;
+
+        @Test
+        @DisplayName("Map schema validate with full params is correctly")
+        void fullParamsTest() {
+            var testValueWithOneEntry = Map.of("firstKey", "firstValue");
+            var testValueWithTwoEntry = Map.of(
+                    "firstKey", "firstValue",
+                    "secondKey", "secondValue");
+            var testValueWithEmptyMap = Map.of();
+            var testValueWithTThreeEntry = Map.of(
+                    "firstKey", "firstValue",
+                    "secondKey", "secondValue",
+                    "thirdKey", "thirdValue");
+
+            var validator = new Validator().map().required().sizeOf(SIZE);
+
+            assertTrue(validator.isValid(testValueWithTwoEntry));
+            assertFalse(validator.isValid(testValueWithOneEntry));
+            assertFalse(validator.isValid(testValueWithEmptyMap));
+            assertFalse(validator.isValid(testValueWithTThreeEntry));
+            assertFalse(validator.isValid(null));
+            assertFalse(validator.isValid("some string"));
+        }
+
+        @Test
+        @DisplayName("Map schema validate with only 'sizeOf' params is correctly")
+        void onlySizeOfTest() {
+            var testValueWithOneEntry = Map.of("firstKey", "firstValue");
+            var testValueWithTwoEntry = Map.of(
+                    "firstKey", "firstValue",
+                    "secondKey", "secondValue");
+            var testValueWithEmptyMap = Map.of();
+            var testValueWithTThreeEntry = Map.of(
+                    "firstKey", "firstValue",
+                    "secondKey", "secondValue",
+                    "thirdKey", "thirdValue");
+
+            var validator = new Validator().map().sizeOf(SIZE);
+
+            assertTrue(validator.isValid(testValueWithTwoEntry));
+            assertFalse(validator.isValid(null));
+            assertFalse(validator.isValid(testValueWithOneEntry));
+            assertFalse(validator.isValid(testValueWithEmptyMap));
+            assertFalse(validator.isValid(testValueWithTThreeEntry));
+            assertFalse(validator.isValid("some string"));
+        }
+
+        @Test
+        @DisplayName("Map schema validate with only 'required' params is correctly")
+        void onlyRequiredTest() {
+            var testValueWithOneEntry = Map.of("firstKey", "firstValue");
+            var testValueWithTwoEntry = Map.of(
+                    "firstKey", "firstValue",
+                    "secondKey", "secondValue");
+            var testValueWithEmptyMap = Map.of();
+            var testValueWithTThreeEntry = Map.of(
+                    "firstKey", "firstValue",
+                    "secondKey", "secondValue",
+                    "thirdKey", "thirdValue");
+
+            var validator = new Validator().map().required();
+
+            assertTrue(validator.isValid(testValueWithEmptyMap));
+            assertFalse(validator.isValid(testValueWithTwoEntry));
+            assertFalse(validator.isValid(testValueWithOneEntry));
+            assertFalse(validator.isValid(testValueWithTThreeEntry));
+            assertFalse(validator.isValid(null));
+            assertFalse(validator.isValid("some string"));
         }
     }
 }

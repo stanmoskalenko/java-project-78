@@ -19,6 +19,7 @@ public final class StringSchema extends BaseSchema<StringSchema> {
         return this;
     }
 
+    @Override
     public boolean isValid(Object data) {
         if (super.required && data == null) {
             return false;

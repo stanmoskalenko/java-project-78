@@ -21,6 +21,7 @@ public final class NumberSchema extends BaseSchema<NumberSchema> {
         return this;
     }
 
+    @Override
     public boolean isValid(Object data) {
         if (super.required && data == null) {
             return false;

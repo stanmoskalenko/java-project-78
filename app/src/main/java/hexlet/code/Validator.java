@@ -8,4 +8,8 @@ public final class Validator {
     NumberSchema number() {
         return new NumberSchema();
     }
+
+    MapSchema map() {
+        return new MapSchema();
+    }
 }
