@@ -21,11 +21,7 @@ public final class StringSchema {
     }
 
     public boolean isValid(Object data) {
-        if (data == null) {
-            return false;
-        }
-
-        if (required && String.valueOf(data).isBlank()) {
+        if (required && data == null) {
             return false;
         }
 
