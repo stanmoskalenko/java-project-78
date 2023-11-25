@@ -18,10 +18,32 @@ public final class MapSchema extends BaseSchema {
         return this;
     }
 
-    public MapSchema sizeof(int sizeNum) {
-        size = sizeNum;
+    public MapSchema sizeof(int count) {
+        size = count;
         return this;
     }
+
+    private boolean checkMap(Map<?, ?> checkedMap) {
+        if (checkedMap.isEmpty()) {
+            return true;
+        }
+
+        if (size != 0 && checkedMap.size() != size) {
+            return false;
+        } else if (schemas != null) {
+            return (checkedMap).values().stream()
+                    .allMatch(value -> {
+                        if (value instanceof Map<?, ?> nestedMap) {
+                            return checkMap(nestedMap);
+                        } else {
+                            return schemas.values().stream().anyMatch(schema -> schema.isValid(value));
+                        }
+                    });
+        }
+
+        return true;
+    }
+
 
     @Override
     public boolean isValid(Object data) {
@@ -32,19 +54,7 @@ public final class MapSchema extends BaseSchema {
         if (data == null) {
             return true;
         } else if (data instanceof Map<?, ?> checkedMap) {
-
-            if (checkedMap.isEmpty()) {
-                return true;
-            }
-
-            if (size != 0 && checkedMap.size() != size) {
-                return false;
-            } else if (schemas != null) {
-                return (checkedMap).values().stream()
-                        .allMatch(value -> schemas.values().stream().anyMatch(schema -> schema.isValid(value)));
-            }
-
-            return true;
+            return checkMap(checkedMap);
         }
 
         return false;
