@@ -15,7 +15,6 @@ class ValidatorTest {
     private static final int LEN = 5;
     private static final int SIZE = 2;
 
-
     @Test
     @DisplayName("Number schema validate is correctly")
     void numbersSchemaTest() {
@@ -49,6 +48,7 @@ class ValidatorTest {
 
         var validator = new Validator().string();
         assertTrue(validator.isValid(null));
+        assertTrue(validator.isValid("test string schema"));
         assertTrue(validator.isValid(""));
         assertFalse(validator.isValid(Integer.MAX_VALUE));
 

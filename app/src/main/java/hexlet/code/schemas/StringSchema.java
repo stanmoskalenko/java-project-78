@@ -39,6 +39,8 @@ public final class StringSchema extends BaseSchema {
             if (substr != null) {
                 return checkedStr.contains(substr);
             }
+
+            return true;
         }
 
         return false;
