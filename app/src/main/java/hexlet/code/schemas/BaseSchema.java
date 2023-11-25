@@ -1,4 +1,4 @@
-package hexlet.code;
+package hexlet.code.schemas;
 
 public abstract class BaseSchema {
     protected boolean required = false;

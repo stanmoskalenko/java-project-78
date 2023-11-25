@@ -1,4 +1,4 @@
-package hexlet.code;
+package hexlet.code.schemas;
 
 public final class NumberSchema extends BaseSchema {
     private boolean pos = false;
