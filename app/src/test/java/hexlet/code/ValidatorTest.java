@@ -54,11 +54,13 @@ class ValidatorTest {
             var validator = new Validator().string().required();
 
             assertTrue(validator.isValid(testValue));
+            assertFalse(validator.isValid(""));
         }
     }
 
     @Nested
     class NumbersTest {
+        private static final int ZERO = 0;
         @Test
         @DisplayName("Number schema validate with full params is correctly")
         void fullParamsTest() {
@@ -92,8 +94,9 @@ class ValidatorTest {
 
             assertTrue(validator.isValid(BETWEEN_RANGE));
             assertTrue(validator.isValid(BOUND));
-            assertTrue(validator.isValid(null));
+            assertFalse(validator.isValid(null));
             assertFalse(validator.isValid(ORIGIN));
+            assertFalse(validator.isValid(ZERO));
         }
     }
 

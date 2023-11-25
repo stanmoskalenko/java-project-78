@@ -21,7 +21,7 @@ public final class StringSchema extends BaseSchema {
 
     @Override
     public boolean isValid(Object data) {
-        if (super.required && data == null) {
+        if (super.required && data == null || String.valueOf(data).isBlank()) {
             return false;
         }
 

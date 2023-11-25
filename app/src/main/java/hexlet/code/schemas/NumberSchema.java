@@ -34,7 +34,7 @@ public final class NumberSchema extends BaseSchema {
         if (data.getClass() == Integer.class) {
             var checkedInt = (Integer) data;
 
-            if (pos && checkedInt < 0) {
+            if (pos && checkedInt < 1) {
                 return false;
             }
 
