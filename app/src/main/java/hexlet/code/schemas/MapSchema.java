@@ -24,7 +24,7 @@ public final class MapSchema extends BaseSchema {
     }
 
     private boolean checkMap(Map<?, ?> checkedMap) {
-        if (checkedMap.isEmpty()) {
+        if (checkedMap.isEmpty() && size == 0) {
             return true;
         }
 
@@ -33,13 +33,11 @@ public final class MapSchema extends BaseSchema {
         } else if (schemas != null) {
             return (checkedMap).values().stream()
                     .allMatch(value -> {
-//                        if (value instanceof Map<?, ?> nestedMap) {
-//                            return checkMap(nestedMap);
-//                        } else {
-//                            return schemas.values().stream().anyMatch(schema -> schema.isValid(value));
-//                        }
-//                        nested map in not supported on this case?
-                        return schemas.values().stream().anyMatch(schema -> schema.isValid(value));
+                        if (value instanceof Map<?, ?> nestedMap) {
+                            return checkMap(nestedMap);
+                        } else {
+                            return schemas.values().stream().anyMatch(schema -> schema.isValid(value));
+                        }
                     });
         }
 
@@ -49,7 +47,7 @@ public final class MapSchema extends BaseSchema {
 
     @Override
     public boolean isValid(Object data) {
-        if (super.required && (data == null || data instanceof Map<?, ?> checkedMap && checkedMap.isEmpty())) {
+        if (super.required && data == null) {
             return false;
         }
 
