@@ -114,7 +114,7 @@ class ValidatorTest {
                     "secondKey", "secondValue",
                     "thirdKey", "thirdValue");
 
-            var validator = new Validator().map().required().sizeOf(SIZE);
+            var validator = new Validator().map().required().sizeof(SIZE);
 
             assertTrue(validator.isValid(testValueWithTwoEntry));
             assertFalse(validator.isValid(testValueWithOneEntry));
@@ -137,7 +137,7 @@ class ValidatorTest {
                     "secondKey", "secondValue",
                     "thirdKey", "thirdValue");
 
-            var validator = new Validator().map().sizeOf(SIZE);
+            var validator = new Validator().map().sizeof(SIZE);
 
             assertTrue(validator.isValid(testValueWithTwoEntry));
             assertFalse(validator.isValid(null));
@@ -191,7 +191,7 @@ class ValidatorTest {
                     "stringValue", "value");
             var testInvalidEmptyMap = Map.of();
 
-            var validator = new Validator().map().required().sizeOf(SIZE).shape(schemas);
+            var validator = new Validator().map().required().sizeof(SIZE).shape(schemas);
 
             assertTrue(validator.isValid(testValidEntry));
             assertFalse(validator.isValid(testInvalidEmptyMap));
