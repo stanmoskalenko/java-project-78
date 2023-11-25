@@ -1,3 +1,5 @@
+# Data validator
+
 ### Hexlet tests and linter status:
 
 <div align="center">
@@ -6,3 +8,14 @@
 |---|---|---| ---|
 
 </div>
+
+## Validation of the following types is supported: 
+
+* numbers;
+* strings 
+* maps;
+* nested maps validation with complex schema.
+
+# Usagee example
+
+[![asciicast](https://asciinema.org/a/NtQ6xBownxYFN2H8WEffvtcS1.svg)](https://asciinema.org/a/NtQ6xBownxYFN2H8WEffvtcS1)
