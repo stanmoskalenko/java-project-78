@@ -1,9 +1,7 @@
 package hexlet.code;
 
-public abstract class BaseSchema<T extends BaseSchema<T>> {
+public abstract class BaseSchema {
     protected boolean required = false;
-
-    public abstract T required();
 
     public abstract boolean isValid(Object data);
 }

@@ -10,10 +10,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ValidatorTest {
+    private static final int ORIGIN = -5;
+    private static final int BOUND = 5;
+    private static final int BETWEEN_RANGE = 3;
+    private static final int LARGE_VALUE = 99;
+    private static final int LEN = 5;
     @Nested
     class StringTest {
-        private static final int LEN = 5;
-
         @Test
         @DisplayName("String schema validate with full params is correctly")
         void fullParamsTest() {
@@ -56,11 +59,6 @@ class ValidatorTest {
 
     @Nested
     class NumbersTest {
-        private static final int ORIGIN = -5;
-        private static final int BOUND = 5;
-        private static final int BETWEEN_RANGE = 3;
-        private static final int LARGE_VALUE = 99;
-
         @Test
         @DisplayName("Number schema validate with full params is correctly")
         void fullParamsTest() {
@@ -104,7 +102,7 @@ class ValidatorTest {
         private static final int SIZE = 2;
 
         @Test
-        @DisplayName("Map schema validate with full params is correctly")
+        @DisplayName("Map schema validate with 'required' and 'sizeOf' params is correctly")
         void fullParamsTest() {
             var testValueWithOneEntry = Map.of("firstKey", "firstValue");
             var testValueWithTwoEntry = Map.of(
@@ -168,6 +166,38 @@ class ValidatorTest {
             assertFalse(validator.isValid(testValueWithTwoEntry));
             assertFalse(validator.isValid(testValueWithOneEntry));
             assertFalse(validator.isValid(testValueWithTThreeEntry));
+            assertFalse(validator.isValid(null));
+            assertFalse(validator.isValid("some string"));
+        }
+
+        @Test
+        @DisplayName("Map schema validate with only 'schema' params is correctly")
+        void nestedValidationTest() {
+            var numberSchema = new Validator().number().positive().range(ORIGIN, BOUND);
+            var stringSchema = new Validator().string().required().contains("test").minLength(LEN);
+            var schemas = Map.of("numbers", numberSchema, "strings", stringSchema);
+
+            var testValidEntry = Map.of(
+                    "numberValue", BETWEEN_RANGE,
+                    "stringValue", "testValue");
+            var testInvalidNumber = Map.of(
+                    "numberValue", LARGE_VALUE,
+                    "stringValue", "testValue");
+            var testInvalidString = Map.of(
+                    "numberValue", BOUND,
+                    "stringValue", "value");
+            var testInvalidNumberAndString = Map.of(
+                    "numberValue", ORIGIN,
+                    "stringValue", "value");
+            var testInvalidEmptyMap = Map.of();
+
+            var validator = new Validator().map().required().sizeOf(SIZE).shape(schemas);
+
+            assertTrue(validator.isValid(testValidEntry));
+            assertFalse(validator.isValid(testInvalidEmptyMap));
+            assertFalse(validator.isValid(testInvalidNumber));
+            assertFalse(validator.isValid(testInvalidString));
+            assertFalse(validator.isValid(testInvalidNumberAndString));
             assertFalse(validator.isValid(null));
             assertFalse(validator.isValid("some string"));
         }
