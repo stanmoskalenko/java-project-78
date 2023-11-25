@@ -28,12 +28,10 @@ public final class NumberSchema extends BaseSchema {
         }
 
         if (data == null) {
-            data = 0;
+            return true;
         }
 
-        if (data.getClass() == Integer.class) {
-            var checkedInt = (Integer) data;
-
+        if (data instanceof Integer checkedInt) {
             if (pos && checkedInt < 1) {
                 return false;
             }

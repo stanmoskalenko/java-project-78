@@ -25,18 +25,26 @@ public final class MapSchema extends BaseSchema {
 
     @Override
     public boolean isValid(Object data) {
-        if (super.required && data == null) {
+        if (super.required && (data == null || data instanceof Map<?, ?> checkedMap && checkedMap.isEmpty())) {
             return false;
         }
-        if (data instanceof Map) {
-            if (((Map<?, ?>) data).size() != size) {
-                return false;
-            } else if (schemas != null) {
-                return ((Map<?, ?>) data).values().stream()
-                        .allMatch(value -> schemas.values().stream().anyMatch(schema -> schema.isValid(value)));
-            } else {
+
+        if (data == null) {
+            return true;
+        } else if (data instanceof Map<?, ?> checkedMap) {
+
+            if (checkedMap.isEmpty()) {
                 return true;
             }
+
+            if (size != 0 && checkedMap.size() != size) {
+                return false;
+            } else if (schemas != null) {
+                return (checkedMap).values().stream()
+                        .allMatch(value -> schemas.values().stream().anyMatch(schema -> schema.isValid(value)));
+            }
+
+            return true;
         }
 
         return false;

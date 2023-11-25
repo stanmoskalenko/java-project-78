@@ -2,7 +2,7 @@ package hexlet.code.schemas;
 
 public final class StringSchema extends BaseSchema {
     private int minLen;
-    private String substr = "";
+    private String substr;
 
     public StringSchema required() {
         super.required = true;
@@ -21,15 +21,26 @@ public final class StringSchema extends BaseSchema {
 
     @Override
     public boolean isValid(Object data) {
-        if (super.required && data == null || String.valueOf(data).isBlank()) {
+        if (super.required && (data == null || String.valueOf(data).isBlank())) {
             return false;
         }
 
-        if (data.getClass() == String.class) {
-            var checkedStr = (String) data;
-            return checkedStr.contains(substr) && checkedStr.length() >= minLen;
-        } else {
-            return false;
+        if (data == null) {
+            return true;
+        } else if (data instanceof String checkedStr) {
+
+            if (checkedStr.isBlank()) {
+                return true;
+            }
+
+            if (minLen != 0 && checkedStr.length() < minLen) {
+                return false;
+            }
+            if (substr != null) {
+                return checkedStr.contains(substr);
+            }
         }
+
+        return false;
     }
 }

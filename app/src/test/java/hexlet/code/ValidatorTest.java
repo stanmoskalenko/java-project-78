@@ -1,7 +1,6 @@
 package hexlet.code;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -13,196 +12,110 @@ class ValidatorTest {
     private static final int ORIGIN = -5;
     private static final int BOUND = 5;
     private static final int BETWEEN_RANGE = 3;
-    private static final int LARGE_VALUE = 99;
     private static final int LEN = 5;
-    @Nested
-    class StringTest {
-        @Test
-        @DisplayName("String schema validate with full params is correctly")
-        void fullParamsTest() {
-            var valueWithSubstr = "Test 99 test java";
-            var valueWithoutSubstr = "Test 99 f java";
-            var valueLengthIsLessMinParams = "test";
-            var validator = new Validator().string()
-                    .required()
-                    .minLength(LEN)
-                    .contains("test");
+    private static final int SIZE = 2;
 
-            assertTrue(validator.isValid(valueWithSubstr));
-            assertFalse(validator.isValid(valueWithoutSubstr));
-            assertFalse(validator.isValid(valueLengthIsLessMinParams));
-            assertFalse(validator.isValid(null));
-            assertFalse(validator.isValid(LEN));
-            assertFalse(validator.isValid(""));
-        }
 
-        @Test
-        @DisplayName("String schema validate with only 'contains' param is correctly")
-        void onlyContainsTest() {
-            var testValue = "T t";
-            var valueWithoutSubstr = " T U G";
-            var validator = new Validator().string().contains("t");
+    @Test
+    @DisplayName("Number schema validate is correctly")
+    void numbersSchemaTest() {
+        var validator = new Validator().number();
+        assertTrue(validator.isValid(Integer.MAX_VALUE));
+        assertTrue(validator.isValid(Integer.MIN_VALUE));
+        assertTrue(validator.isValid(null));
 
-            assertTrue(validator.isValid(testValue));
-            assertFalse(validator.isValid(valueWithoutSubstr));
-        }
+        validator.positive();
+        assertTrue(validator.isValid(Integer.MAX_VALUE));
+        assertFalse(validator.isValid(Integer.MIN_VALUE));
+        assertTrue(validator.isValid(null));
 
-        @Test
-        @DisplayName("String schema validate with only 'required' param is correctly")
-        void onlyRequiredTest() {
-            var testValue = "must be true";
-            var validator = new Validator().string().required();
+        validator.required();
+        assertTrue(validator.isValid(Integer.MAX_VALUE));
+        assertFalse(validator.isValid(Integer.MIN_VALUE));
+        assertFalse(validator.isValid(null));
 
-            assertTrue(validator.isValid(testValue));
-            assertFalse(validator.isValid(""));
-        }
+        validator.range(ORIGIN, BOUND);
+        assertTrue(validator.isValid(BETWEEN_RANGE));
+        assertTrue(validator.isValid(BOUND));
+        assertFalse(validator.isValid(Integer.MIN_VALUE));
+        assertFalse(validator.isValid(Integer.MAX_VALUE));
+        assertFalse(validator.isValid(null));
+        assertFalse(validator.isValid(""));
     }
 
-    @Nested
-    class NumbersTest {
-        private static final int ZERO = 0;
-        @Test
-        @DisplayName("Number schema validate with full params is correctly")
-        void fullParamsTest() {
-            var validator = new Validator().number()
-                    .required()
-                    .positive()
-                    .range(ORIGIN, BOUND);
+    @Test
+    @DisplayName("String schema validate is correctly")
+    void stringsSchemaTest() {
 
-            assertTrue(validator.isValid(BETWEEN_RANGE));
-            assertFalse(validator.isValid(LARGE_VALUE));
-            assertFalse(validator.isValid(ORIGIN));
-            assertFalse(validator.isValid(null));
-            assertFalse(validator.isValid(""));
-        }
+        var validator = new Validator().string();
+        assertTrue(validator.isValid(null));
+        assertTrue(validator.isValid(""));
+        assertFalse(validator.isValid(Integer.MAX_VALUE));
 
+        validator.minLength(LEN);
+        assertTrue(validator.isValid(null));
+        assertTrue(validator.isValid(""));
+        assertFalse(validator.isValid(Integer.MAX_VALUE));
 
-        @Test
-        @DisplayName("Number schema validate with only 'range' param is correctly")
-        void onlyRangeTest() {
-            var validator = new Validator().number().range(ORIGIN, BOUND);
+        validator.contains("test");
+        assertTrue(validator.isValid(null));
+        assertTrue(validator.isValid("test string schema"));
+        assertTrue(validator.isValid(""));
+        assertFalse(validator.isValid("test"));
+        assertFalse(validator.isValid(Integer.MAX_VALUE));
 
-            assertTrue(validator.isValid(BETWEEN_RANGE));
-            assertTrue(validator.isValid(BOUND));
-            assertFalse(validator.isValid(LARGE_VALUE));
-        }
-
-        @Test
-        @DisplayName("Number schema validate with only 'positive' param is correctly")
-        void onlyPositiveTest() {
-            var validator = new Validator().number().positive();
-
-            assertTrue(validator.isValid(BETWEEN_RANGE));
-            assertTrue(validator.isValid(BOUND));
-            assertFalse(validator.isValid(null));
-            assertFalse(validator.isValid(ORIGIN));
-            assertFalse(validator.isValid(ZERO));
-        }
+        validator.required();
+        assertTrue(validator.isValid("test string schema"));
+        assertFalse(validator.isValid("test"));
+        assertFalse(validator.isValid(null));
+        assertFalse(validator.isValid(""));
+        assertFalse(validator.isValid(Integer.MAX_VALUE));
     }
 
-    @Nested
-    class MapTest {
-        private static final int SIZE = 2;
+    @Test
+    @DisplayName("Map schema validate is correctly")
+    void mapSchemaTest() {
+        var numberSchema = new Validator().number().positive().range(ORIGIN, BOUND);
+        var stringSchema = new Validator().string().required().contains("test").minLength(LEN);
+        var schemas = Map.of("numbers", numberSchema, "strings", stringSchema);
 
-        @Test
-        @DisplayName("Map schema validate with 'required' and 'sizeOf' params is correctly")
-        void fullParamsTest() {
-            var testValueWithOneEntry = Map.of("firstKey", "firstValue");
-            var testValueWithTwoEntry = Map.of(
-                    "firstKey", "firstValue",
-                    "secondKey", "secondValue");
-            var testValueWithEmptyMap = Map.of();
-            var testValueWithTThreeEntry = Map.of(
-                    "firstKey", "firstValue",
-                    "secondKey", "secondValue",
-                    "thirdKey", "thirdValue");
+        var testTwoEntry = Map.of(
+                "numberValue", BETWEEN_RANGE,
+                "stringValue", "testValue");
+        var testTwoInvalidStringEntry = Map.of(
+                "numberValue", BETWEEN_RANGE,
+                "stringValue", "value value");
 
-            var validator = new Validator().map().required().sizeof(SIZE);
+        var testTwoInvalidNumberEntry = Map.of(
+                "numberValue", Integer.MAX_VALUE,
+                "stringValue", "test value");
 
-            assertTrue(validator.isValid(testValueWithTwoEntry));
-            assertFalse(validator.isValid(testValueWithOneEntry));
-            assertFalse(validator.isValid(testValueWithEmptyMap));
-            assertFalse(validator.isValid(testValueWithTThreeEntry));
-            assertFalse(validator.isValid(null));
-            assertFalse(validator.isValid("some string"));
-        }
+        var testThreeEntry = Map.of(
+                "numberValue", BETWEEN_RANGE,
+                "stringValue", "testValue",
+                "numberValue2", Integer.MAX_VALUE);
+        var testEmptyMap = Map.of();
 
-        @Test
-        @DisplayName("Map schema validate with only 'sizeOf' params is correctly")
-        void onlySizeOfTest() {
-            var testValueWithOneEntry = Map.of("firstKey", "firstValue");
-            var testValueWithTwoEntry = Map.of(
-                    "firstKey", "firstValue",
-                    "secondKey", "secondValue");
-            var testValueWithEmptyMap = Map.of();
-            var testValueWithTThreeEntry = Map.of(
-                    "firstKey", "firstValue",
-                    "secondKey", "secondValue",
-                    "thirdKey", "thirdValue");
+        var validator = new Validator().map();
+        assertTrue(validator.isValid(testTwoEntry));
+        assertTrue(validator.isValid(testThreeEntry));
+        assertTrue(validator.isValid(testEmptyMap));
+        assertTrue(validator.isValid(null));
+        assertFalse(validator.isValid(Integer.MAX_VALUE));
 
-            var validator = new Validator().map().sizeof(SIZE);
+        validator.sizeof(SIZE);
+        assertTrue(validator.isValid(testTwoEntry));
+        assertTrue(validator.isValid(testEmptyMap));
+        assertTrue(validator.isValid(null));
+        assertFalse(validator.isValid(testThreeEntry));
 
-            assertTrue(validator.isValid(testValueWithTwoEntry));
-            assertFalse(validator.isValid(null));
-            assertFalse(validator.isValid(testValueWithOneEntry));
-            assertFalse(validator.isValid(testValueWithEmptyMap));
-            assertFalse(validator.isValid(testValueWithTThreeEntry));
-            assertFalse(validator.isValid("some string"));
-        }
+        validator.shape(schemas);
+        assertTrue(validator.isValid(testTwoEntry));
+        assertFalse(validator.isValid(testTwoInvalidNumberEntry));
+        assertFalse(validator.isValid(testTwoInvalidStringEntry));
 
-        @Test
-        @DisplayName("Map schema validate with only 'required' params is correctly")
-        void onlyRequiredTest() {
-            var testValueWithOneEntry = Map.of("firstKey", "firstValue");
-            var testValueWithTwoEntry = Map.of(
-                    "firstKey", "firstValue",
-                    "secondKey", "secondValue");
-            var testValueWithEmptyMap = Map.of();
-            var testValueWithTThreeEntry = Map.of(
-                    "firstKey", "firstValue",
-                    "secondKey", "secondValue",
-                    "thirdKey", "thirdValue");
-
-            var validator = new Validator().map().required();
-
-            assertTrue(validator.isValid(testValueWithEmptyMap));
-            assertFalse(validator.isValid(testValueWithTwoEntry));
-            assertFalse(validator.isValid(testValueWithOneEntry));
-            assertFalse(validator.isValid(testValueWithTThreeEntry));
-            assertFalse(validator.isValid(null));
-            assertFalse(validator.isValid("some string"));
-        }
-
-        @Test
-        @DisplayName("Map schema validate with only 'schema' params is correctly")
-        void nestedValidationTest() {
-            var numberSchema = new Validator().number().positive().range(ORIGIN, BOUND);
-            var stringSchema = new Validator().string().required().contains("test").minLength(LEN);
-            var schemas = Map.of("numbers", numberSchema, "strings", stringSchema);
-
-            var testValidEntry = Map.of(
-                    "numberValue", BETWEEN_RANGE,
-                    "stringValue", "testValue");
-            var testInvalidNumber = Map.of(
-                    "numberValue", LARGE_VALUE,
-                    "stringValue", "testValue");
-            var testInvalidString = Map.of(
-                    "numberValue", BOUND,
-                    "stringValue", "value");
-            var testInvalidNumberAndString = Map.of(
-                    "numberValue", ORIGIN,
-                    "stringValue", "value");
-            var testInvalidEmptyMap = Map.of();
-
-            var validator = new Validator().map().required().sizeof(SIZE).shape(schemas);
-
-            assertTrue(validator.isValid(testValidEntry));
-            assertFalse(validator.isValid(testInvalidEmptyMap));
-            assertFalse(validator.isValid(testInvalidNumber));
-            assertFalse(validator.isValid(testInvalidString));
-            assertFalse(validator.isValid(testInvalidNumberAndString));
-            assertFalse(validator.isValid(null));
-            assertFalse(validator.isValid("some string"));
-        }
+        validator.required();
+        assertFalse(validator.isValid(testEmptyMap));
+        assertFalse(validator.isValid(null));
     }
 }
