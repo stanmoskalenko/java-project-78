@@ -33,11 +33,13 @@ public final class MapSchema extends BaseSchema {
         } else if (schemas != null) {
             return (checkedMap).values().stream()
                     .allMatch(value -> {
-                        if (value instanceof Map<?, ?> nestedMap) {
-                            return checkMap(nestedMap);
-                        } else {
-                            return schemas.values().stream().anyMatch(schema -> schema.isValid(value));
-                        }
+//                        if (value instanceof Map<?, ?> nestedMap) {
+//                            return checkMap(nestedMap);
+//                        } else {
+//                            return schemas.values().stream().anyMatch(schema -> schema.isValid(value));
+//                        }
+//                        nested map in not supported on this case?
+                        return schemas.values().stream().anyMatch(schema -> schema.isValid(value));
                     });
         }
 
