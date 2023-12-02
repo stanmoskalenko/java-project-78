@@ -2,61 +2,31 @@ package hexlet.code.schemas;
 
 import java.util.Map;
 
-public final class MapSchema extends BaseSchema {
+public final class MapSchema extends BaseSchema<Map> {
 
-    private int size;
-
-    private Map<String, BaseSchema> schemas;
+    public MapSchema() {
+        super(Map.class);
+    }
 
     public MapSchema required() {
-        super.required = true;
+        validator.add(value -> value != null && !value.isEmpty());
         return this;
     }
 
-    public MapSchema shape(Map<String, BaseSchema> schemasProperty) {
-        schemas = schemasProperty;
+    public MapSchema shape(Map<?, BaseSchema> schemasProperty) {
+        validator.add(value -> {
+            if (value == null) {
+                return false;
+            }
+            return value.values().stream()
+                    .allMatch(v -> schemasProperty.values().stream()
+                            .anyMatch(i -> i.isValid(v)));
+        });
         return this;
     }
 
-    public MapSchema sizeof(int count) {
-        size = count;
+    public MapSchema sizeof(Integer count) {
+        validator.add(value -> value == null || value.size() == count);
         return this;
-    }
-
-    private boolean checkMap(Map<?, ?> checkedMap) {
-        if (checkedMap.isEmpty() && size == 0) {
-            return true;
-        }
-
-        if (size != 0 && checkedMap.size() != size) {
-            return false;
-        } else if (schemas != null) {
-            return (checkedMap).values().stream()
-                    .allMatch(value -> {
-                        if (value instanceof Map<?, ?> nestedMap) {
-                            return checkMap(nestedMap);
-                        } else {
-                            return schemas.values().stream().anyMatch(schema -> schema.isValid(value));
-                        }
-                    });
-        }
-
-        return true;
-    }
-
-
-    @Override
-    public boolean isValid(Object data) {
-        if (super.required && data == null) {
-            return false;
-        }
-
-        if (data == null) {
-            return true;
-        } else if (data instanceof Map<?, ?> checkedMap) {
-            return checkMap(checkedMap);
-        }
-
-        return false;
     }
 }

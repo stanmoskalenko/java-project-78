@@ -2,14 +2,10 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import com.adarshr.gradle.testlogger.theme.ThemeType
 
 plugins {
-    application
+    java
     checkstyle
     jacoco
     id("com.adarshr.test-logger") version "4.0.0"
-}
-
-application {
-    mainClass.set("hexlet.code.Validator")
 }
 
 group = "hexlet.code"
