@@ -1,6 +1,7 @@
 package hexlet.code.schemas;
 
 import java.util.Map;
+import java.util.Objects;
 
 public final class MapSchema extends BaseSchema<Map> {
 
@@ -9,7 +10,7 @@ public final class MapSchema extends BaseSchema<Map> {
     }
 
     public MapSchema required() {
-        schemas.add(value -> value != null && !value.isEmpty());
+        schemas.add(Objects::nonNull);
         return this;
     }
 
@@ -31,7 +32,7 @@ public final class MapSchema extends BaseSchema<Map> {
     }
 
     public MapSchema sizeof(int count) {
-        schemas.add(value -> value == null || value.isEmpty() || value.size() == count);
+        schemas.add(value -> value == null || value.size() == count);
         return this;
     }
 }

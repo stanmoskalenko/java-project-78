@@ -32,7 +32,6 @@ tasks.test {
     useJUnitPlatform()
     reports.enabled
     testLogging.exceptionFormat = TestExceptionFormat.FULL
-    testLogging.events = setOf(TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
     testlogger {
         setTheme(ThemeType.MOCHA)
         showSummary = true
