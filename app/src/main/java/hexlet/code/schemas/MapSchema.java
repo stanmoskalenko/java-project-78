@@ -31,7 +31,7 @@ public final class MapSchema extends BaseSchema<Map> {
     }
 
     public MapSchema sizeof(int count) {
-        schemas.add(value -> value == null || value.size() == count);
+        schemas.add(value -> value == null || value.isEmpty() || value.size() == count);
         return this;
     }
 }

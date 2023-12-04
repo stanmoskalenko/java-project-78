@@ -1,5 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import com.adarshr.gradle.testlogger.theme.ThemeType
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     java
@@ -31,6 +32,7 @@ tasks.test {
     useJUnitPlatform()
     reports.enabled
     testLogging.exceptionFormat = TestExceptionFormat.FULL
+    testLogging.events = setOf(TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
     testlogger {
         setTheme(ThemeType.MOCHA)
         showSummary = true

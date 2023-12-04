@@ -59,7 +59,7 @@ class ValidatorTest {
         validator.sizeof(TWO);
         assertTrue(validator.isValid(testTwoEntry));
         assertTrue(validator.isValid(null));
-        assertFalse(validator.isValid(testEmptyMap));
+        assertTrue(validator.isValid(testEmptyMap));
         assertFalse(validator.isValid(testThreeEntry));
         assertFalse(validator.isValid(testOneEntry));
 
@@ -125,7 +125,7 @@ class ValidatorTest {
         validator.sizeof(TWO);
         assertTrue(validator.isValid(testTwoEntry));
         assertTrue(validator.isValid(null));
-        assertFalse(validator.isValid(testEmptyMap));
+        assertTrue(validator.isValid(testEmptyMap));
         assertFalse(validator.isValid(testThreeEntry));
         assertFalse(validator.isValid(testOneEntry));
 

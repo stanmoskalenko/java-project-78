@@ -18,10 +18,6 @@ public abstract class BaseSchema<T> {
             return false;
         }
 
-        if (schemas.isEmpty()) {
-            return true;
-        }
-
         return schemas.stream().allMatch(schema -> schema.test((T) data));
     }
 }
