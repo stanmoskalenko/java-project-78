@@ -5,20 +5,16 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public abstract class BaseSchema<T> {
-    private final Class<T> type;
+    public final Class<T> dataType;
 
     protected BaseSchema(Class<T> type) {
-        this.type = type;
-    }
-
-    protected final Class<T> getType() {
-        return type;
+        this.dataType = type;
     }
 
     protected final Set<Predicate<T>> schemas = new HashSet<>();
 
     public final boolean isValid(Object data) {
-        if (data != null && !type.isInstance(data)) {
+        if (data != null && !dataType.isInstance(data)) {
             return false;
         }
 

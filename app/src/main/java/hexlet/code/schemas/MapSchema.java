@@ -21,7 +21,7 @@ public final class MapSchema extends BaseSchema<Map> {
                         return checkMap(schemasProperty, nestedMap);
                     }
                     return schemasProperty.values().stream()
-                            .filter(schema -> schema.getType().isInstance(value))
+                            .filter(schema -> schema.dataType.isInstance(value))
                             .allMatch(schema -> schema.isValid(value));
                 });
     }
