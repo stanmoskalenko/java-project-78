@@ -5,13 +5,13 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public abstract class BaseSchema<T> {
-    public final Class<T> type;
+    protected final Class<T> type;
 
     protected BaseSchema(Class<T> type) {
         this.type = type;
     }
 
-    public final Set<Predicate<T>> schemas = new HashSet<>();
+    protected final Set<Predicate<T>> schemas = new HashSet<>();
 
     public final boolean isValid(Object data) {
         if (data != null && !type.isInstance(data)) {
