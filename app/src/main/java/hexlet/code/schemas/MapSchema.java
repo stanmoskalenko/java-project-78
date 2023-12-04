@@ -9,24 +9,29 @@ public final class MapSchema extends BaseSchema<Map> {
     }
 
     public MapSchema required() {
-        validator.add(value -> value != null && !value.isEmpty());
+        schemas.add(value -> value != null && !value.isEmpty());
         return this;
+    }
+
+    private boolean checkMap(Map<?, BaseSchema> schemasProperty, Map<?, ?> data) {
+        return data.values().stream()
+                .allMatch(value -> {
+                    if (value instanceof Map<?, ?> nestedMap) {
+                        return checkMap(schemasProperty, nestedMap);
+                    }
+                    return schemasProperty.values().stream()
+                            .filter(schema -> schema.type.isInstance(value))
+                            .allMatch(schema -> schema.isValid(value));
+                });
     }
 
     public MapSchema shape(Map<?, BaseSchema> schemasProperty) {
-        validator.add(value -> {
-            if (value == null) {
-                return false;
-            }
-            return value.values().stream()
-                    .allMatch(v -> schemasProperty.values().stream()
-                            .anyMatch(i -> i.isValid(v)));
-        });
+        schemas.add(data -> data == null || checkMap(schemasProperty, data));
         return this;
     }
 
-    public MapSchema sizeof(Integer count) {
-        validator.add(value -> value == null || value.size() == count);
+    public MapSchema sizeof(int count) {
+        schemas.add(value -> value == null || value.size() == count);
         return this;
     }
 }

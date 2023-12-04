@@ -5,25 +5,23 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public abstract class BaseSchema<T> {
-
-    private final Class<T> type;
+    public final Class<T> type;
 
     protected BaseSchema(Class<T> type) {
         this.type = type;
     }
 
-    public final Set<Predicate<T>> validator = new HashSet<>();
+    public final Set<Predicate<T>> schemas = new HashSet<>();
 
-    public  final boolean isValid(Object data) {
+    public final boolean isValid(Object data) {
         if (data != null && !type.isInstance(data)) {
             return false;
         }
 
-        if (validator.isEmpty()) {
+        if (schemas.isEmpty()) {
             return true;
         }
 
-        return validator.stream().allMatch(schema -> schema.test((T) data));
-
+        return schemas.stream().allMatch(schema -> schema.test((T) data));
     }
 }
