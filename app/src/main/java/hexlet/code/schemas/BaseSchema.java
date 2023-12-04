@@ -5,10 +5,14 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public abstract class BaseSchema<T> {
-    public final Class<T> dataType;
+    private final Class<T> dataType;
 
     protected BaseSchema(Class<T> type) {
         this.dataType = type;
+    }
+
+    protected final Class<T> getDataType() {
+        return dataType;
     }
 
     protected final Set<Predicate<T>> schemas = new HashSet<>();
